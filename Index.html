@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:black;
+  color:white;
+  text-align:center;
+  overflow:hidden;
+}
+
+/* background */
+.bg {
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:url('background.jpg') center/cover no-repeat;
+  filter:brightness(0.5) blur(2px);
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* sections */
+.section {
+  position:absolute;
+  width:100%;
+  top:50%;
+  transform:translateY(-50%);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1s ease;
+}
+.active {
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* text */
+h1 {
+  font-size:2.5em;
+  letter-spacing:2px;
+}
+p {
+  font-size:1.1em;
+  opacity:0.9;
+}
+
+/* button */
+button {
+  margin-top:25px;
+  padding:12px 30px;
+  border:none;
+  border-radius:30px;
+  background:white;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* glow */
+.glow {
+  text-shadow:0 0 10px pink, 0 0 20px red;
+}
+
+/* moments gallery */
+.fade-gallery {
+  position: relative;
+  width: 80%;
+  max-width: 300px;
+  height: 400px;
+  margin: 20px auto;
+}
+
+.fade-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.active-img {
+  opacity: 1;
+}
+
+#caption {
+  margin-top: 15px;
+}
+
+/* audio style */
+.audio-box {
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  margin: 10px auto;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 300px;
+}
+
+/* floating hearts */
+.heart {
+  position:fixed;
+  bottom:-10px;
+  animation:floatUp 5s linear infinite;
+}
+@keyframes floatUp {
+  to {transform:translateY(-100vh); opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<!-- HOME -->
+<div id="home" class="section active">
+  <h1 class="glow">Hi ayyuyyee ❤️</h1>
+  <p id="type"></p>
+  <button onclick="goTo('memories')">Enter</button>
+</div>
+
+<!-- MOMENTS -->
+<div id="memories" class="section">
+  <h1 class="glow">Our Moments ❤️</h1>
+
+  <div class="fade-gallery">
+    <img class="fade-img active-img" src="photo1.jpg">
+    <img class="fade-img" src="photo2.jpg">
+    <img class="fade-img" src="photo3.jpg">
+    <img class="fade-img" src="photo4.jpg">
+  </div>
+
+  <p id="caption">Our first memory 💕</p>
+
+  <button onclick="goTo('counter')">Next</button>
+</div>
+
+<!-- COUNTER -->
+<div id="counter" class="section">
+  <h1 class="glow">Us ❤️</h1>
+  <p id="time"></p>
+  <button onclick="goTo('final')">Next</button>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="section">
+  <h1 class="glow">I Love You ❤️</h1>
+  <p>You are my everything 💖</p>
+
+  <div class="audio-box">
+    <p>💌 Listen when you miss me</p>
+    <audio controls>
+      <source src="advice.mp3">
+    </audio>
+  </div>
+
+  <div class="audio-box">
+    <p>🎵 Our song</p>
+    <audio controls>
+      <source src="loveeee.mp3">
+    </audio>
+  </div>
+
+  <div class="audio-box">
+    <p>🎤 Something I want to tell you...</p>
+    <audio controls>
+      <source src="voice.mp3">
+    </audio>
+  </div>
+
+  <br>
+  <button onclick="goTo('home')">Again</button>
+</div>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="music" loop>
+  <source src="loveee.mp3">
+</audio>
+
+<script>
+// stop other audios when one plays
+const allAudios = document.querySelectorAll("audio");
+
+allAudios.forEach(audio => {
+  audio.addEventListener("play", () => {
+    allAudios.forEach(other => {
+      if (other !== audio) {
+        other.pause();
+        other.currentTime = 0;
+      }
+    });
+  });
+});
+// navigation
+function goTo(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// typewriter
+let text="This is not just a website... it's my heart ❤️";
+let i=0;
+(function type(){
+  if(i<text.length){
+    document.getElementById("type").innerHTML+=text[i++];
+    setTimeout(type,60);
+  }
+})();
+
+// moments fade
+const imgs = document.querySelectorAll(".fade-img");
+const captions = [
+  "Our first memory 💕",
+  "That day I smiled because of you 🌸",
+  "Moments I’ll never forget ❤️",
+  "You are my favorite person 💖"
+];
+
+let index = 0;
+
+setInterval(() => {
+  imgs[index].classList.remove("active-img");
+  index = (index + 1) % imgs.length;
+  imgs[index].classList.add("active-img");
+  document.getElementById("caption").innerText = captions[index];
+}, 3000);
+
+// counter
+let start=new Date("2025-08-01"); // change this
+setInterval(()=>{
+  let diff=new Date()-start;
+  let d=Math.floor(diff/(1000*60*60*24));
+  document.getElementById("time").innerHTML=d+" days together ❤️";
+},1000);
+
+// floating hearts
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),5000);
+},500);
+
+// music autoplay after click
+document.body.addEventListener("click",()=>{
+  document.getElementById("music").play().catch(()=>{});
+},{once:true});
+</script>
+
+</body>
+</html>
